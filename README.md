@@ -2,7 +2,7 @@
 
 This script generates an RSS feed for Anthropic's engineering blog posts using Playwright to scrape the client-side rendered content.
 
-Feed URL: https://raw.githubusercontent.com/conoro/anthropic-engineering-rss-feed/main/anthropic_engineering_rss.xml
+Feed URL: https://conoro.github.io/anthropic-engineering-rss-feed/anthropic_engineering_rss.xml
 
 ## Features
 
