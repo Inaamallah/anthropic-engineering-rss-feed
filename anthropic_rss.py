@@ -33,10 +33,26 @@ class AnthropicRSSGenerator:
         async with async_playwright() as p:
             browser = await p.chromium.launch(headless=True)
             page = await browser.new_page()
-            await page.goto(self.base_url)
             
-            # Wait for articles to be loaded using wildcard selector
-            await page.wait_for_selector("div[class*='ArticleList_articles__']")
+            # Increase default timeouts to 60 seconds
+            page.set_default_timeout(60000)
+            page.set_default_navigation_timeout(60000)
+            
+            try:
+                # Navigate with networkidle to wait for page to fully load
+                await page.goto(self.base_url, wait_until='networkidle')
+            except Exception as e:
+                print(f"Navigation error: {e}")
+                await browser.close()
+                return []
+            
+            # Wait for articles to be loaded using wildcard selector with increased timeout
+            try:
+                await page.wait_for_selector("div[class*='ArticleList_articles__']", timeout=60000)
+            except Exception as e:
+                print(f"Timeout waiting for articles selector: {e}")
+                await browser.close()
+                return []
             
             # Get all article elements using wildcard selector
             articles = await page.query_selector_all("div[class*='ArticleList_articles__'] > div > article")
